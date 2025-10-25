@@ -60,6 +60,25 @@ export interface CreateProductRequest {
   isActive?: string;
 }
 
+// New interface for JSON-only product creation (Step 1)
+export interface CreateProductPayload {
+  productName: string;
+  productCategory: number;
+  unitPrice: number;
+  discountType?: number;
+  discountValue?: number;
+  productDescription: string;
+  stock: number;
+  minStock: number;
+  tag: string[];
+}
+
+// Interface for image upload (Step 2)
+export interface UploadProductImagesRequest {
+  productId: string;
+  images: File[];
+}
+
 export interface CreateProductFormData {
   productName: string;
   productCategory: string; // API uses different field name
@@ -75,6 +94,19 @@ export interface CreateProductFormData {
 
 export interface UpdateProductRequest extends Partial<CreateProductRequest> {
   productId: string;
+}
+
+// New interface for product edit (Step 3)
+export interface EditProductPayload {
+  productName?: string;
+  productCategory?: number;
+  unitPrice?: number;
+  discountType?: number;
+  discountValue?: number;
+  productDescription?: string;
+  stock?: number;
+  minStock?: number;
+  tag?: string[];
 }
 
 export interface ProductsState {

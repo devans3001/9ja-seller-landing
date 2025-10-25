@@ -1,6 +1,21 @@
-// This file is now deprecated for product creation
-// Product creation now uses JSON API + separate image upload
-// Image upload utilities have been moved to imageUpload.utils.ts
+/**
+ * Create FormData for product image upload
+ * Backend expects multiple files with the same field name 'productImage'
+ */
+export const createImageFormData = (images: File[]): FormData => {
+  const formData = new FormData();
+
+  // Multiple files with same field name - this is what the backend expects
+  images.forEach((image) => {
+    formData.append('productImage', image, image.name);
+  });
+
+  return formData;
+};
+
+
+
+
 
 /**
  * Validate file for product image upload
@@ -59,6 +74,3 @@ export const createImagePreview = (file: File): string => {
 export const revokeImagePreview = (url: string): void => {
   URL.revokeObjectURL(url);
 };
-
-// mapToFormData function is now deprecated
-// Use createProductPayload from productData.utils.ts instead

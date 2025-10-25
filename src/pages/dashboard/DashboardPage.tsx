@@ -1,96 +1,161 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
+import { useDashboard } from '@/hooks/useDashboard';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
 
 export default function DashboardPage() {
-  const [stats] = useState({
-    totalProducts: 24,
-    totalOrders: 156,
-    totalRevenue: 12450.00,
-    pendingOrders: 8
-  });
+  const user = useAuthStore((state) => state.user);
+  const { dashboardData, isLoading, error, fetchDashboardSummary } = useDashboard();
 
-  const recentOrders = [
-    { id: '#ORD-001', customer: 'John Doe', amount: 89.99, status: 'pending', date: '2024-01-15' },
-    { id: '#ORD-002', customer: 'Jane Smith', amount: 156.50, status: 'shipped', date: '2024-01-14' },
-    { id: '#ORD-003', customer: 'Mike Johnson', amount: 75.25, status: 'delivered', date: '2024-01-13' },
-  ];
+  // Fetch dashboard data on component mount
+  useEffect(() => {
+    fetchDashboardSummary();
+  }, [fetchDashboardSummary]);
 
-  const topProducts = [
-    { name: 'Premium Widget', sales: 45, revenue: 2250.00 },
-    { name: 'Deluxe Gadget', sales: 32, revenue: 1920.00 },
-    { name: 'Standard Tool', sales: 28, revenue: 1400.00 },
-  ];
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  // Get status color
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-orange-100 text-orange-800';
+      case 'shipped':
+        return 'bg-blue-100 text-blue-800';
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <ErrorMessage message={error} />
+        <button
+          onClick={fetchDashboardSummary}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">
+            Welcome back, {user?.fullName?.split(' ')[0] || 'Seller'}! 👋
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Here's what's happening with {user?.storeName || user?.businessName || 'your store'}.
+          </p>
         </div>
-        <Link
-          to="/products/new"
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-        >
-          Add Product
-        </Link>
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <button
+            onClick={fetchDashboardSummary}
+            disabled={isLoading}
+            className="px-3 sm:px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors disabled:opacity-50 text-sm"
+          >
+            {isLoading ? '🔄' : '↻'} <span className="hidden sm:inline">Refresh</span>
+          </button>
+          <Link
+            to="/products/new"
+            className="px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm"
+          >
+            <span className="sm:hidden">+ Product</span>
+            <span className="hidden sm:inline">Add Product</span>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-card border border-border rounded-lg p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Total Products</p>
-              <p className="text-2xl font-bold text-foreground">{stats.totalProducts}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{dashboardData?.totalProducts || 0}</p>
             </div>
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-              <span className="text-primary text-xl">📦</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="text-primary text-lg sm:text-xl">📦</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Total Orders</p>
-              <p className="text-2xl font-bold text-foreground">{stats.totalOrders}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{dashboardData?.totalOrders || 0}</p>
             </div>
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-              <span className="text-primary text-xl">🛒</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="text-primary text-lg sm:text-xl">🛒</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Total Revenue</p>
-              <p className="text-2xl font-bold text-foreground">${stats.totalRevenue.toLocaleString()}</p>
+              <p className="text-lg sm:text-2xl font-bold text-foreground">
+                {formatCurrency(dashboardData?.totalRevenue || 0)}
+              </p>
             </div>
-            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-              <span className="text-primary text-xl">💰</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="text-primary text-lg sm:text-xl">💰</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Pending Orders</p>
-              <p className="text-2xl font-bold text-foreground">{stats.pendingOrders}</p>
+              <p className="text-xl sm:text-2xl font-bold text-foreground">{dashboardData?.pendingOrders || 0}</p>
             </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <span className="text-orange-600 text-xl">⏳</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <span className="text-orange-600 text-lg sm:text-xl">⏳</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Recent Orders */}
-        <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-foreground">Recent Orders</h2>
             <Link to="/orders" className="text-primary hover:text-primary/80 text-sm">
@@ -98,29 +163,34 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="space-y-4">
-            {recentOrders.map((order) => (
-              <div key={order.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-md">
-                <div>
-                  <p className="font-medium text-foreground">{order.id}</p>
-                  <p className="text-sm text-muted-foreground">{order.customer}</p>
+            {dashboardData?.recentOrders && dashboardData.recentOrders.length > 0 ? (
+              dashboardData.recentOrders.slice(0, 3).map((order) => (
+                <div key={order.orderNo} className="flex items-center justify-between p-3 bg-secondary/50 rounded-md">
+                  <div>
+                    <p className="font-medium text-foreground">{order.orderNo}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {order.products.length} item{order.products.length > 1 ? 's' : ''} • {formatDate(order.createdAt)}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-foreground">{formatCurrency(order.totalAmount)}</p>
+                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(order.status)}`}>
+                      {order.status}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium text-foreground">${order.amount}</p>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                    order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                    'bg-green-100 text-green-800'
-                  }`}>
-                    {order.status}
-                  </span>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No recent orders</p>
+                <p className="text-sm">Orders will appear here once customers start purchasing</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
         {/* Top Products */}
-        <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-foreground">Top Products</h2>
             <Link to="/products" className="text-primary hover:text-primary/80 text-sm">
@@ -128,20 +198,29 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="space-y-4">
-            {topProducts.map((product, index) => (
-              <div key={product.name} className="flex items-center justify-between p-3 bg-secondary/50 rounded-md">
-                <div className="flex items-center space-x-3">
-                  <span className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium text-primary">
-                    {index + 1}
-                  </span>
-                  <div>
-                    <p className="font-medium text-foreground">{product.name}</p>
-                    <p className="text-sm text-muted-foreground">{product.sales} sales</p>
+            {dashboardData?.topProducts && dashboardData.topProducts.length > 0 ? (
+              dashboardData.topProducts.slice(0, 3).map((product, index) => (
+                <div key={product.productId} className="flex items-center justify-between p-3 bg-secondary/50 rounded-md">
+                  <div className="flex items-center space-x-3">
+                    <span className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium text-primary">
+                      {index + 1}
+                    </span>
+                    <div>
+                      <p className="font-medium text-foreground">{product.productName}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {product.totalSold} sold • {product.totalOrders} order{product.totalOrders > 1 ? 's' : ''}
+                      </p>
+                    </div>
                   </div>
+                  <p className="font-medium text-foreground">{formatCurrency(product.totalRevenue)}</p>
                 </div>
-                <p className="font-medium text-foreground">${product.revenue.toLocaleString()}</p>
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No top products yet</p>
+                <p className="text-sm">Your best-selling products will appear here</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

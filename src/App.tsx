@@ -8,11 +8,12 @@ import HomePage from './pages/HomePage';
 import DashboardLayout from './components/layout/DashboardLayout';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/register/RegisterPage';
-import BusinessVerificationPage from './pages/auth/register/BusinessVerificationPage';
 import RegisterSuccess from './pages/auth/register/RegisterSuccess';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import ProductsPage from './pages/products/ProductsPage';
+import ProductDetailPage from './pages/products/ProductDetailPage';
 import AddProductPage from './pages/products/AddProductPage';
+import EditProductPage from './pages/products/EditProductPage';
 import OrdersPage from './pages/orders/OrdersPage';
 import StorefrontPage from './pages/storefront/StorefrontPage';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
@@ -36,11 +37,8 @@ export default function App() {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register/success" element={<RegisterSuccess />} />
         </Route>
-        
-        {/* Business Verification Routes (separate layout) */}
-        <Route path="/register/business-verification/*" element={<BusinessVerificationPage />} />
-        <Route path="/register/success" element={<RegisterSuccess />} />
         
         {/* Protected Dashboard Routes */}
         <Route element={
@@ -52,6 +50,16 @@ export default function App() {
           <Route path="/products" element={
             <ErrorBoundary>
               <ProductsPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/products/:id" element={
+            <ErrorBoundary>
+              <ProductDetailPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/products/:id/edit" element={
+            <ErrorBoundary>
+              <EditProductPage />
             </ErrorBoundary>
           } />
           <Route path="/products/new" element={<AddProductPage />} />

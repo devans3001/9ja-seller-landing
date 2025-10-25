@@ -4,6 +4,7 @@ import type { ApiError } from '@/types';
 export interface ApiClientError extends Error {
   status?: number;
   data?: ApiError;
+  response?: any; // Preserve the full axios response for detailed error handling
 }
 
 export interface RequestConfig {

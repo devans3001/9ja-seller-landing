@@ -1,0 +1,64 @@
+import { useState, useCallback } from 'react';
+import { dashboardService } from '@/services/dashboard.service';
+import type { VendorProfile } from '@/types';
+
+interface UseVendorProfileReturn {
+  profile: VendorProfile | null;
+  isLoading: boolean;
+  error: string | null;
+  fetchProfile: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
+  updateProfile: (profileData: Partial<VendorProfile>) => Promise<void>;
+}
+
+export const useVendorProfile = (): UseVendorProfileReturn => {
+  const [profile, setProfile] = useState<VendorProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProfile = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await dashboardService.getVendorProfile();
+      setProfile(data);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch profile data';
+      setError(errorMessage);
+      console.error('Profile fetch error:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const refreshProfile = useCallback(async () => {
+    await fetchProfile();
+  }, [fetchProfile]);
+
+  const updateProfile = useCallback(async (profileData: Partial<VendorProfile>) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const updatedProfile = await dashboardService.updateVendorProfile(profileData);
+      setProfile(updatedProfile);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update profile';
+      setError(errorMessage);
+      console.error('Profile update error:', err);
+      throw err; // Re-throw so the component can handle it
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    profile,
+    isLoading,
+    error,
+    fetchProfile,
+    refreshProfile,
+    updateProfile,
+  };
+};

@@ -27,14 +27,14 @@ export interface RegistrationFormData {
   emailAddress: string;
   password: string;
   confirmPassword: string;
-  
+
   // Step 2
   fullName: string;
   businessName: string;
   businessCategory: string; // UI uses string, converted to number for API
   businessCategoryId: number; // Actual category ID for API
   phoneNumber: string;
-  
+
   // Step 3
   businessRegNumber: string;
   storeName: string;
@@ -52,9 +52,51 @@ export interface RegistrationState {
   completedSteps: number[];
 }
 
+export interface CompleteRegistrationData {
+  // Basic account info
+  emailAddress: string;
+  password: string;
+  fullName: string;
+  businessName: string;
+  businessCategory: number;
+  phoneNumber: string;
+
+  // Business details
+  businessRegNumber: string;
+  storeName: string;
+  businessAddress: string;
+  taxIdNumber: string;
+
+  // Documents
+  idDocument: File;
+  businessRegCertificate: File;
+}
+
 export interface RegistrationApiResponse {
   status: number;
   error: boolean;
   message: string;
   data?: any;
+}
+
+export interface RegistrationApiError {
+  status: number;
+  error: number;
+  messages: Record<string, string>;
+}
+
+export interface RegistrationFieldErrors {
+  emailAddress?: string;
+  password?: string;
+  confirmPassword?: string;
+  fullName?: string;
+  businessName?: string;
+  businessCategory?: string;
+  phoneNumber?: string;
+  storeName?: string;
+  businessAddress?: string;
+  businessRegNumber?: string;
+  taxIdNumber?: string;
+  idDocument?: string;
+  businessRegCertificate?: string;
 }

@@ -1,7 +1,7 @@
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/constants';
 import { tokenStorage, userStorage } from '@/lib/auth.utils';
-import type { LoginRequest, LoginResponse, RegisterRequest, User } from '@/types';
+import type { LoginRequest, LoginResponse, RegisterRequest, User, VendorProfile } from '@/types';
 
 export class AuthService {
   async login(credentials: LoginRequest): Promise<{ user: User; token: string }> {
@@ -27,6 +27,24 @@ export class AuthService {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      throw new Error(errorMessage);
+    }
+  }
+
+  async getProfile(): Promise<VendorProfile> {
+    try {
+      const response = await apiClient.get<VendorProfile>(
+        API_ENDPOINTS.VENDOR.PROFILE,
+        { requiresAuth: true }
+      );
+
+      if (response.error || !response.data) {
+        throw new Error(response.message || 'Failed to fetch profile');
+      }
+
+      return response.data;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch profile';
       throw new Error(errorMessage);
     }
   }
@@ -59,17 +77,9 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    try {
-      // Call logout endpoint if available
-      await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
-    } catch (error) {
-      // Continue with logout even if API call fails
-      console.warn('Logout API call failed:', error);
-    } finally {
-      // Always clear local storage
-      tokenStorage.remove();
-      userStorage.remove();
-    }
+    // Since there's no backend logout endpoint, just clear local storage
+    tokenStorage.remove();
+    userStorage.remove();
   }
 
   getCurrentUser(): User | null {

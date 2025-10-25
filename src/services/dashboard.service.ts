@@ -1,0 +1,76 @@
+import { apiClient } from "@/lib/api/client";
+import { API_ENDPOINTS } from "@/lib/constants";
+import type { DashboardSummary, VendorProfile } from "@/types";
+
+export class DashboardService {
+  async getDashboardSummary(): Promise<DashboardSummary> {
+    try {
+      const response = await apiClient.get<DashboardSummary>(
+        API_ENDPOINTS.VENDOR.DASHBOARD_SUMMARY,
+        { requiresAuth: true }
+      );
+
+      if (response.error || !response.data) {
+        throw new Error(
+          response.message || "Failed to fetch dashboard summary"
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch dashboard summary";
+      throw new Error(errorMessage);
+    }
+  }
+
+  async getVendorProfile(): Promise<VendorProfile> {
+    try {
+      const response = await apiClient.get<VendorProfile>(
+        API_ENDPOINTS.VENDOR.PROFILE,
+        { requiresAuth: true }
+      );
+
+      if (response.error || !response.data) {
+        throw new Error(response.message || "Failed to fetch vendor profile");
+      }
+
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch vendor profile";
+      throw new Error(errorMessage);
+    }
+  }
+
+  async updateVendorProfile(
+    profileData: Partial<VendorProfile>
+  ): Promise<VendorProfile> {
+    try {
+      const response = await apiClient.put<VendorProfile>(
+        API_ENDPOINTS.VENDOR.UPDATE_PROFILE,
+        profileData,
+        { requiresAuth: true }
+      );
+
+      if (response.error || !response.data) {
+        throw new Error(response.message || "Failed to update vendor profile");
+      }
+
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to update vendor profile";
+      throw new Error(errorMessage);
+    }
+  }
+}
+
+// Export singleton instance
+export const dashboardService = new DashboardService();

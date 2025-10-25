@@ -1,9 +1,13 @@
 import type { RegistrationStep3Data } from '@/types';
 
+
+
 /**
  * Convert registration step 3 data to FormData for API submission
  */
 export const createRegistrationFormData = (data: RegistrationStep3Data): FormData => {
+  console.log('🛠️ UTILS - Creating FormData from:', data);
+  
   const formData = new FormData();
 
   // Basic fields
@@ -13,10 +17,26 @@ export const createRegistrationFormData = (data: RegistrationStep3Data): FormDat
   formData.append('businessAddress', data.businessAddress);
   formData.append('taxIdNumber', data.taxIdNumber);
 
-  // File uploads
-  formData.append('idDocument', data.idDocument, data.idDocument.name);
-  formData.append('businessRegCertificate', data.businessRegCertificate, data.businessRegCertificate.name);
+  console.log('🛠️ UTILS - Added basic fields to FormData');
 
+  // File uploads - try without custom filename first
+  formData.append('idDocument', data.idDocument);
+  formData.append('businessRegCertificate', data.businessRegCertificate);
+
+  console.log('🛠️ UTILS - Added files to FormData:', {
+    idDocument: {
+      name: data.idDocument.name,
+      size: data.idDocument.size,
+      type: data.idDocument.type
+    },
+    businessRegCertificate: {
+      name: data.businessRegCertificate.name,
+      size: data.businessRegCertificate.size,
+      type: data.businessRegCertificate.type
+    }
+  });
+
+  console.log('🛠️ UTILS - FormData created successfully');
   return formData;
 };
 
@@ -75,7 +95,15 @@ export const validateRegistrationDocuments = (
 };
 
 /**
- * Get category ID from category name
+ * Get business category ID from category name
+ */
+export const getBusinessCategoryIdByName = (categoryName: string, categories: any[]): number | null => {
+  const category = categories.find(cat => cat.categoryName === categoryName);
+  return category ? parseInt(category.id) : null;
+};
+
+/**
+ * Get product category ID from category name (legacy)
  */
 export const getCategoryIdByName = (categoryName: string, categories: any[]): number | null => {
   const category = categories.find(cat => cat.categoryName === categoryName);

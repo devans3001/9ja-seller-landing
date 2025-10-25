@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useProducts } from "@/hooks/useProducts";
+import { useProductsStore } from "@/stores/productsStore";
 import { useCategories } from "@/hooks/useCategories";
 import { LoadingButton } from "@/components/ui/LoadingSpinner";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 import { TagsInput } from "@/components/ui/TagsInput";
-import type { CreateProductRequest } from "@/types";
+import type { UpdateProductRequest } from "@/types";
 
 interface ProductForm {
   productName: string;
@@ -20,11 +21,23 @@ interface ProductForm {
   minStock: string;
   productTags: string[];
   images: File[];
+  isActive: string;
 }
 
-export default function AddProductPage() {
+export default function EditProductPage() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { createProduct, isLoading: isCreating, loadingStep } = useProducts();
+  
+  // Use direct store access
+  const product = useProductsStore((state) => state.currentProduct);
+  const isLoading = useProductsStore((state) => state.isLoading);
+  const error = useProductsStore((state) => state.error);
+  const loadingStep = useProductsStore((state) => state.loadingStep);
+  const fetchProductDetails = useProductsStore((state) => state.fetchProductDetails);
+  const updateProduct = useProductsStore((state) => state.updateProduct);
+  const clearCurrentProduct = useProductsStore((state) => state.clearCurrentProduct);
+  const clearError = useProductsStore((state) => state.clearError);
+
   const {
     categories,
     isLoading: categoriesLoading,
@@ -36,20 +49,50 @@ export default function AddProductPage() {
     categoryId: "",
     productDescription: "",
     unitPrice: "",
-    discountType: "1", // Default to percentage
+    discountType: "1",
     discountValue: "0",
     stock: "",
     minStock: "",
     productTags: [],
     images: [],
+    isActive: "1",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  // Load categories on component mount
+  // Load product and categories on component mount
   useEffect(() => {
+    if (id) {
+      fetchProductDetails(id);
+    }
     fetchCategories();
-  }, [fetchCategories]);
+
+    // Cleanup on unmount
+    return () => {
+      clearCurrentProduct();
+      clearError();
+    };
+  }, [id]);
+
+  // Populate form when product is loaded
+  useEffect(() => {
+    if (product) {
+      setForm({
+        productName: product.productName || "",
+        categoryId: product.categoryId || "",
+        productDescription: product.productDescription || "",
+        unitPrice: product.unitPrice || "",
+        discountType: product.discountType || "1",
+        discountValue: product.discountValue || "0",
+        stock: product.stock || "",
+        minStock: product.minStock || "",
+        productTags: product.productTags || [],
+        images: [], // Start with empty images for new uploads
+        isActive: product.isActive || "1",
+      });
+    }
+  }, [product]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -78,10 +121,6 @@ export default function AddProductPage() {
       newErrors.minStock = "Please enter a valid minimum stock";
     }
 
-    if (form.images.length === 0) {
-      newErrors.images = "At least one product image is required";
-    }
-
     if (form.productTags.length === 0) {
       newErrors.productTags = "At least one tag is required";
     }
@@ -107,33 +146,36 @@ export default function AddProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    if (!validateForm() || !id) {
       toast.error("Please fix the errors in the form");
       return;
     }
 
+    setIsUpdating(true);
+
     try {
-      const productData: CreateProductRequest = {
+      const productData: UpdateProductRequest = {
+        productId: id,
         productName: form.productName,
         categoryId: form.categoryId,
         productDescription: form.productDescription,
         productTags: form.productTags,
         unitPrice: form.unitPrice,
-        discountType:
-          form.discountValue === "0" ? undefined : form.discountType,
-        discountValue:
-          form.discountValue === "0" ? undefined : form.discountValue,
+        discountType: form.discountValue === "0" ? undefined : form.discountType,
+        discountValue: form.discountValue === "0" ? undefined : form.discountValue,
         stock: form.stock,
         minStock: form.minStock,
-        images: form.images,
-        isActive: "1", // Active by default
+        images: form.images.length > 0 ? form.images : undefined, // Only include if new images
+        isActive: form.isActive,
       };
 
-      await createProduct(productData);
-      toast.success("Product created successfully!");
-      navigate("/products");
+      await updateProduct(productData);
+      toast.success("Product updated successfully!");
+      navigate(`/products/${id}`);
     } catch {
-      toast.error("Failed to create product. Please try again.");
+      toast.error("Failed to update product. Please try again.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -145,42 +187,108 @@ export default function AddProductPage() {
     }
   };
 
+  // Loading state
+  if (isLoading && !product) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <ErrorMessage message={error} />
+        <div className="flex space-x-4">
+          <button
+            onClick={() => id && fetchProductDetails(id)}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+          >
+            Retry
+          </button>
+          <button
+            onClick={() => navigate("/products")}
+            className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors"
+          >
+            Back to Products
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Product not found
+  if (!product && !isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-6xl mb-4">📦</div>
+        <h3 className="text-lg font-semibold text-foreground mb-2">
+          Product not found
+        </h3>
+        <p className="text-muted-foreground mb-4">
+          The product you're trying to edit doesn't exist or has been removed.
+        </p>
+        <button
+          onClick={() => navigate("/products")}
+          className="inline-flex px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+        >
+          Back to Products
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      {/* Breadcrumbs */}
+      <nav className="flex items-center space-x-2 text-sm text-muted-foreground">
+        <Link to="/products" className="hover:text-foreground transition-colors">
+          Products
+        </Link>
+        <span>/</span>
+        <Link to={`/products/${id}`} className="hover:text-foreground transition-colors">
+          {product?.productName || "Product"}
+        </Link>
+        <span>/</span>
+        <span className="text-foreground">Edit</span>
+      </nav>
+
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Add Product</h1>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Create a new product for your store
+          <h1 className="text-2xl font-bold text-foreground">Edit Product</h1>
+          <p className="text-muted-foreground">
+            Update your product information
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
+        <div className="flex justify-end space-x-2">
           <button
             type="button"
-            onClick={() => navigate("/products")}
-            disabled={isCreating}
+            onClick={() => navigate(`/products/${id}`)}
+            disabled={isUpdating}
             className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <LoadingButton
             type="submit"
-            isLoading={isCreating}
+            isLoading={isUpdating}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
-            {isCreating ? loadingStep || "Creating..." : "Create Product"}
+            {isUpdating ? loadingStep || "Updating..." : "Update Product"}
           </LoadingButton>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
-            <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
+            <div className="bg-card border border-border rounded-lg p-6">
               <h2 className="text-lg font-semibold text-foreground mb-4">
                 Basic Information
               </h2>
@@ -195,7 +303,7 @@ export default function AddProductPage() {
                     onChange={(e) => updateForm("productName", e.target.value)}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="Enter product name"
-                    disabled={isCreating}
+                    disabled={isUpdating}
                   />
                   {errors.productName && (
                     <ErrorMessage
@@ -217,7 +325,7 @@ export default function AddProductPage() {
                     }
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="Describe your product"
-                    disabled={isCreating}
+                    disabled={isUpdating}
                   />
                   {errors.productDescription && (
                     <ErrorMessage
@@ -247,7 +355,7 @@ export default function AddProductPage() {
                     onChange={(e) => updateForm("unitPrice", e.target.value)}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="0.00"
-                    disabled={isCreating}
+                    disabled={isUpdating}
                   />
                   {errors.unitPrice && (
                     <ErrorMessage message={errors.unitPrice} className="mt-1" />
@@ -262,7 +370,7 @@ export default function AddProductPage() {
                     value={form.discountType}
                     onChange={(e) => updateForm("discountType", e.target.value)}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                    disabled={isCreating}
+                    disabled={isUpdating}
                   >
                     <option value="1">Percentage (%)</option>
                     <option value="2">Fixed Amount (₦)</option>
@@ -282,7 +390,7 @@ export default function AddProductPage() {
                   onChange={(e) => updateForm("discountValue", e.target.value)}
                   className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="0"
-                  disabled={isCreating}
+                  disabled={isUpdating}
                 />
                 {errors.discountValue && (
                   <ErrorMessage
@@ -315,7 +423,7 @@ export default function AddProductPage() {
                     onChange={(e) => updateForm("stock", e.target.value)}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="0"
-                    disabled={isCreating}
+                    disabled={isUpdating}
                   />
                   {errors.stock && (
                     <ErrorMessage message={errors.stock} className="mt-1" />
@@ -333,7 +441,7 @@ export default function AddProductPage() {
                     onChange={(e) => updateForm("minStock", e.target.value)}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="0"
-                    disabled={isCreating}
+                    disabled={isUpdating}
                   />
                   {errors.minStock && (
                     <ErrorMessage message={errors.minStock} className="mt-1" />
@@ -345,8 +453,11 @@ export default function AddProductPage() {
             {/* Product Images */}
             <div className="bg-card border border-border rounded-lg p-6">
               <h2 className="text-lg font-semibold text-foreground mb-4">
-                Product Images *
+                Product Images
               </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Upload new images to replace existing ones (optional)
+              </p>
               <ImageUpload
                 images={form.images}
                 onImagesChange={(images) => updateForm("images", images)}
@@ -393,7 +504,7 @@ export default function AddProductPage() {
                   value={form.categoryId}
                   onChange={(e) => updateForm("categoryId", e.target.value)}
                   className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                  disabled={isCreating}
+                  disabled={isUpdating}
                 >
                   <option value="">Select a category</option>
                   {categories.map((category) => (
@@ -417,15 +528,46 @@ export default function AddProductPage() {
                 Product Status
               </h2>
               <div className="space-y-2">
-                <div className="flex items-center p-3 bg-green-50 border border-green-200 rounded-md">
-                  <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                  <div>
-                    <p className="text-sm font-medium text-green-800">Active</p>
-                    <p className="text-xs text-green-600">
-                      Product will be visible to customers
-                    </p>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="isActive"
+                    value="1"
+                    checked={form.isActive === "1"}
+                    onChange={(e) => updateForm("isActive", e.target.value)}
+                    disabled={isUpdating}
+                    className="mr-2"
+                  />
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                    <div>
+                      <p className="text-sm font-medium text-green-800">Active</p>
+                      <p className="text-xs text-green-600">
+                        Product will be visible to customers
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="isActive"
+                    value="0"
+                    checked={form.isActive === "0"}
+                    onChange={(e) => updateForm("isActive", e.target.value)}
+                    disabled={isUpdating}
+                    className="mr-2"
+                  />
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                    <div>
+                      <p className="text-sm font-medium text-red-800">Inactive</p>
+                      <p className="text-xs text-red-600">
+                        Product will be hidden from customers
+                      </p>
+                    </div>
+                  </div>
+                </label>
               </div>
             </div>
 
@@ -436,7 +578,7 @@ export default function AddProductPage() {
               </h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Images:</span>
+                  <span className="text-muted-foreground">New Images:</span>
                   <span className="text-foreground">
                     {form.images.length}/5
                   </span>
@@ -471,21 +613,21 @@ export default function AddProductPage() {
         </div>
 
         {/* Bottom Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 pt-6 border-t border-border">
+        <div className="flex justify-end space-x-2 pt-6 border-t border-border">
           <button
             type="button"
-            onClick={() => navigate("/products")}
-            disabled={isCreating}
+            onClick={() => navigate(`/products/${id}`)}
+            disabled={isUpdating}
             className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <LoadingButton
             type="submit"
-            isLoading={isCreating}
+            isLoading={isUpdating}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
-            {isCreating ? loadingStep || "Creating..." : "Create Product"}
+            {isUpdating ? loadingStep || "Updating..." : "Update Product"}
           </LoadingButton>
         </div>
       </form>

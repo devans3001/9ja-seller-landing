@@ -80,7 +80,22 @@ class ApiClient {
           break;
 
         case 400:
-          apiError.message = data?.messages?.error || "Bad request";
+          // LOG RAW 400 ERROR FOR DEBUGGING
+          console.log("🚨 API CLIENT - Raw 400 Error Response:", {
+            status,
+            data,
+            fullResponse: error.response
+          });
+          
+          // Preserve the original error structure for registration errors
+          if (data?.messages && typeof data.messages === 'object') {
+            // This is likely a validation error with field-specific messages
+            apiError.message = data?.messages?.error || "Validation failed";
+            // Preserve the response data so registration service can access it
+            apiError.response = error.response;
+          } else {
+            apiError.message = data?.messages?.error || "Bad request";
+          }
           break;
 
         case 403:

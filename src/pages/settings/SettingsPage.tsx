@@ -1,97 +1,143 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { useVendorProfile } from '@/hooks/useVendorProfile';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { ErrorMessage } from '@/components/ui/ErrorMessage';
+import type { VendorProfile } from '@/types';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState('account');
-  const [settings, setSettings] = useState({
-    // Account settings
-    firstName: 'John',
-    lastName: 'Seller',
-    email: 'john@example.com',
-    phone: '+1 (555) 123-4567',
-    
-    // Business settings
-    businessName: 'My Awesome Store',
-    businessEmail: 'business@example.com',
-    businessPhone: '+1 (555) 987-6543',
-    taxId: '12-3456789',
-    
-    // Notification settings
-    emailNotifications: true,
-    smsNotifications: false,
-    orderNotifications: true,
-    marketingEmails: false,
-    
-    // Payment settings
-    paymentMethod: 'bank_transfer',
-    bankAccount: '****1234',
-    payoutSchedule: 'weekly'
-  });
+  const [activeTab, setActiveTab] = useState('profile');
+  const { profile, isLoading, error, fetchProfile, updateProfile } = useVendorProfile();
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<Partial<VendorProfile>>({});
+
+  // Fetch profile data on component mount
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  // Update form data when profile is loaded
+  useEffect(() => {
+    if (profile) {
+      setFormData(profile);
+    }
+  }, [profile]);
 
   const tabs = [
-    { id: 'account', name: 'Account', icon: '👤' },
+    { id: 'profile', name: 'Profile', icon: '👤' },
     { id: 'business', name: 'Business', icon: '🏢' },
-    { id: 'notifications', name: 'Notifications', icon: '🔔' },
-    { id: 'payments', name: 'Payments', icon: '💳' },
     { id: 'security', name: 'Security', icon: '🔒' }
   ];
 
-  const handleSave = () => {
-    console.log('Saving settings:', settings);
-    // Handle save logic here
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    if (profile) {
+      setFormData(profile);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateProfile(formData);
+      setIsEditing(false);
+      toast.success('Profile updated successfully!');
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      toast.error('Failed to update profile. Please try again.');
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   };
 
   const renderTabContent = () => {
+    if (!profile) return null;
+
     switch (activeTab) {
-      case 'account':
+      case 'profile':
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Personal Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    First Name
-                  </label>
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-foreground">Personal Information</h3>
+              {!isEditing && (
+                <button
+                  onClick={handleEdit}
+                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                >
+                  Edit Profile
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Full Name
+                </label>
+                {isEditing ? (
                   <input
                     type="text"
-                    value={settings.firstName}
-                    onChange={(e) => setSettings(prev => ({ ...prev, firstName: e.target.value }))}
+                    value={formData.account?.fullName || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      account: { ...prev.account!, fullName: e.target.value }
+                    }))}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.lastName}
-                    onChange={(e) => setSettings(prev => ({ ...prev, lastName: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    value={settings.email}
-                    onChange={(e) => setSettings(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Phone
-                  </label>
+                ) : (
+                  <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                    {profile.account.fullName}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Email Address
+                </label>
+                <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                  {profile.account.emailAddress}
+                  <span className="ml-2 text-xs text-muted-foreground">(Cannot be changed)</span>
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Phone Number
+                </label>
+                {isEditing ? (
                   <input
                     type="tel"
-                    value={settings.phone}
-                    onChange={(e) => setSettings(prev => ({ ...prev, phone: e.target.value }))}
+                    value={formData.account?.phoneNumber || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      account: { ...prev.account!, phoneNumber: e.target.value }
+                    }))}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   />
-                </div>
+                ) : (
+                  <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                    {profile.account.phoneNumber}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Account Created
+                </label>
+                <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                  {formatDate(profile.createdAt)}
+                </p>
               </div>
             </div>
           </div>
@@ -100,134 +146,134 @@ export default function SettingsPage() {
       case 'business':
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Business Information</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Business Name
-                  </label>
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-foreground">Business Information</h3>
+              {!isEditing && (
+                <button
+                  onClick={handleEdit}
+                  className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                >
+                  Edit Business Info
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Business Name
+                </label>
+                {isEditing ? (
                   <input
                     type="text"
-                    value={settings.businessName}
-                    onChange={(e) => setSettings(prev => ({ ...prev, businessName: e.target.value }))}
+                    value={formData.business?.businessName || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      business: { ...prev.business!, businessName: e.target.value }
+                    }))}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
-                      Business Email
-                    </label>
-                    <input
-                      type="email"
-                      value={settings.businessEmail}
-                      onChange={(e) => setSettings(prev => ({ ...prev, businessEmail: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-1">
-                      Business Phone
-                    </label>
-                    <input
-                      type="tel"
-                      value={settings.businessPhone}
-                      onChange={(e) => setSettings(prev => ({ ...prev, businessPhone: e.target.value }))}
-                      className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Tax ID
-                  </label>
+                ) : (
+                  <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                    {profile.business.businessName}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Store Name
+                </label>
+                {isEditing ? (
                   <input
                     type="text"
-                    value={settings.taxId}
-                    onChange={(e) => setSettings(prev => ({ ...prev, taxId: e.target.value }))}
+                    value={formData.business?.storeName || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      business: { ...prev.business!, storeName: e.target.value }
+                    }))}
                     className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                   />
-                </div>
+                ) : (
+                  <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                    {profile.business.storeName}
+                  </p>
+                )}
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Business Address
+                </label>
+                {isEditing ? (
+                  <textarea
+                    rows={3}
+                    value={formData.business?.businessAddress || ''}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      business: { ...prev.business!, businessAddress: e.target.value }
+                    }))}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  />
+                ) : (
+                  <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                    {profile.business.businessAddress}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Business Registration Number
+                </label>
+                <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                  {profile.business.businessRegNumber || 'Not provided'}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Tax ID Number
+                </label>
+                <p className="px-3 py-2 bg-secondary/50 rounded-md text-foreground">
+                  {profile.business.taxIdNumber || 'Not provided'}
+                </p>
               </div>
             </div>
-          </div>
-        );
 
-      case 'notifications':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Notification Preferences</h3>
-              <div className="space-y-4">
-                {[
-                  { key: 'emailNotifications', label: 'Email Notifications', description: 'Receive notifications via email' },
-                  { key: 'smsNotifications', label: 'SMS Notifications', description: 'Receive notifications via SMS' },
-                  { key: 'orderNotifications', label: 'Order Notifications', description: 'Get notified about new orders' },
-                  { key: 'marketingEmails', label: 'Marketing Emails', description: 'Receive marketing and promotional emails' }
-                ].map((item) => (
-                  <div key={item.key} className="flex items-center justify-between p-4 border border-border rounded-md">
-                    <div>
-                      <p className="font-medium text-foreground">{item.label}</p>
-                      <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={settings[item.key as keyof typeof settings] as boolean}
-                      onChange={(e) => setSettings(prev => ({ ...prev, [item.key]: e.target.checked }))}
-                      className="h-4 w-4 text-primary focus:ring-ring border-border rounded"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-
-      case 'payments':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Payment Settings</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Payment Method
-                  </label>
-                  <select
-                    value={settings.paymentMethod}
-                    onChange={(e) => setSettings(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                  >
-                    <option value="bank_transfer">Bank Transfer</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="stripe">Stripe</option>
-                  </select>
+            {/* Business Documents */}
+            <div className="space-y-4">
+              <h4 className="text-md font-semibold text-foreground">Business Documents</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                <div className="p-4 border border-border rounded-md">
+                  <h5 className="font-medium text-foreground mb-2">ID Document</h5>
+                  {profile.business.idDocument ? (
+                    <a
+                      href={profile.business.idDocument}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 text-sm"
+                    >
+                      📄 View Document
+                    </a>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Not uploaded</p>
+                  )}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Bank Account
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.bankAccount}
-                    onChange={(e) => setSettings(prev => ({ ...prev, bankAccount: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Payout Schedule
-                  </label>
-                  <select
-                    value={settings.payoutSchedule}
-                    onChange={(e) => setSettings(prev => ({ ...prev, payoutSchedule: e.target.value }))}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                  >
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                  </select>
+                <div className="p-4 border border-border rounded-md">
+                  <h5 className="font-medium text-foreground mb-2">Business Registration Certificate</h5>
+                  {profile.business.businessRegCertificate ? (
+                    <a
+                      href={profile.business.businessRegCertificate}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:text-primary/80 text-sm"
+                    >
+                      📄 View Certificate
+                    </a>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Not uploaded</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -237,28 +283,32 @@ export default function SettingsPage() {
       case 'security':
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4">Security Settings</h3>
-              <div className="space-y-4">
-                <div className="p-4 border border-border rounded-md">
-                  <h4 className="font-medium text-foreground mb-2">Change Password</h4>
-                  <p className="text-sm text-muted-foreground mb-4">Update your password to keep your account secure</p>
+            <h3 className="text-lg font-semibold text-foreground">Security Settings</h3>
+            <div className="space-y-4">
+              <div className="p-6 border border-border rounded-md">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-foreground mb-1">Password</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Last updated: {formatDate(profile.updatedAt)}
+                    </p>
+                  </div>
                   <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
                     Change Password
                   </button>
                 </div>
-                <div className="p-4 border border-border rounded-md">
-                  <h4 className="font-medium text-foreground mb-2">Two-Factor Authentication</h4>
-                  <p className="text-sm text-muted-foreground mb-4">Add an extra layer of security to your account</p>
+              </div>
+
+              <div className="p-6 border border-border rounded-md">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-foreground mb-1">Account Security</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Keep your account secure with strong authentication
+                    </p>
+                  </div>
                   <button className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors">
-                    Enable 2FA
-                  </button>
-                </div>
-                <div className="p-4 border border-border rounded-md">
-                  <h4 className="font-medium text-foreground mb-2">Active Sessions</h4>
-                  <p className="text-sm text-muted-foreground mb-4">Manage your active login sessions</p>
-                  <button className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors">
-                    View Sessions
+                    Security Settings
                   </button>
                 </div>
               </div>
@@ -271,29 +321,71 @@ export default function SettingsPage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <ErrorMessage message={error} />
+        <button
+          onClick={fetchProfile}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground">No profile data available</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-        <p className="text-muted-foreground">Manage your account and business settings</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+          <p className="text-muted-foreground">Manage your account and business information</p>
+        </div>
+        <button
+          onClick={fetchProfile}
+          disabled={isLoading}
+          className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors disabled:opacity-50"
+        >
+          {isLoading ? '🔄' : '↻'} Refresh
+        </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
         {/* Sidebar */}
         <div className="lg:w-64">
-          <nav className="space-y-1">
+          <nav className="flex lg:flex-col space-x-1 lg:space-x-0 lg:space-y-1 overflow-x-auto lg:overflow-x-visible">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setIsEditing(false); // Reset editing state when switching tabs
+                }}
+                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}
               >
-                <span className="mr-3">{tab.icon}</span>
-                {tab.name}
+                <span className="mr-2 lg:mr-3">{tab.icon}</span>
+                <span className="hidden sm:inline">{tab.name}</span>
               </button>
             ))}
           </nav>
@@ -301,22 +393,28 @@ export default function SettingsPage() {
 
         {/* Content */}
         <div className="flex-1">
-          <div className="bg-card border border-border rounded-lg p-6">
+          <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
             {renderTabContent()}
             
-            <div className="mt-6 pt-6 border-t border-border">
-              <div className="flex justify-end space-x-3">
-                <button className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors">
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-                >
-                  Save Changes
-                </button>
+            {/* Action Buttons - Only show when editing */}
+            {isEditing && (
+              <div className="mt-6 pt-6 border-t border-border">
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={handleCancel}
+                    className="px-4 py-2 border border-border rounded-md text-foreground hover:bg-secondary transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

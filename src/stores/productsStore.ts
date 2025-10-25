@@ -9,9 +9,12 @@ import type {
 } from "@/types";
 
 interface ProductsStore extends ProductsState {
+  // Extended state
+  loadingStep: string | null;
   // Actions
   fetchProducts: (query?: ProductsQuery) => Promise<void>;
   fetchProduct: (productId: string) => Promise<void>;
+  fetchProductDetails: (productId: string) => Promise<void>;
   createProduct: (productData: CreateProductRequest) => Promise<void>;
   updateProduct: (productData: UpdateProductRequest) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
@@ -20,6 +23,7 @@ interface ProductsStore extends ProductsState {
   clearError: () => void;
   clearCurrentProduct: () => void;
   reset: () => void;
+  setLoadingStep: (step: string | null) => void;
 }
 
 const initialState: ProductsState = {
@@ -34,12 +38,17 @@ const initialState: ProductsState = {
   },
 };
 
+
+
 export const useProductsStore = create<ProductsStore>()(
   devtools(
     (set, get) => ({
       ...initialState,
+      loadingStep: null,
 
       fetchProducts: async (query?: ProductsQuery) => {
+        console.log('🚨 fetchProducts called with query:', query);
+        console.trace('🚨 fetchProducts call stack');
         set({ isLoading: true, error: null });
 
         try {
@@ -88,27 +97,21 @@ export const useProductsStore = create<ProductsStore>()(
         }
       },
 
-      createProduct: async (productData: CreateProductRequest) => {
+      fetchProductDetails: async (productId: string) => {
         set({ isLoading: true, error: null });
 
         try {
-          const newProduct = await productsService.createProduct(productData);
-
-          // Add to products list if we're on the first page
-          const currentState = get();
-          if (currentState.query.page === 1) {
-            set({
-              products: [newProduct, ...currentState.products],
-              isLoading: false,
-              error: null,
-            });
-          } else {
-            set({ isLoading: false, error: null });
-          }
+          const product = await productsService.getProductDetails(productId);
+          set({
+            currentProduct: product,
+            isLoading: false,
+            error: null,
+          });
         } catch (error) {
           const errorMessage =
-            error instanceof Error ? error.message : "Failed to create product";
+            error instanceof Error ? error.message : "Failed to fetch product details";
           set({
+            currentProduct: null,
             isLoading: false,
             error: errorMessage,
           });
@@ -116,10 +119,59 @@ export const useProductsStore = create<ProductsStore>()(
         }
       },
 
-      updateProduct: async (productData: UpdateProductRequest) => {
-        set({ isLoading: true, error: null });
+      createProduct: async (productData: CreateProductRequest) => {
+        set({ isLoading: true, error: null, loadingStep: "Creating product..." });
 
         try {
+          // Step 1: Create product
+          set({ loadingStep: "Creating product..." });
+          const newProduct = await productsService.createProduct(productData);
+
+          // Step 2: Upload images (handled internally by service)
+          if (productData.images.length > 0) {
+            set({ loadingStep: "Uploading images..." });
+          }
+
+          // Add to products list if we're on the first page
+          const currentState = get();
+          if (currentState.query.page === 1) {
+            set({
+              products: [newProduct, ...currentState.products],
+              isLoading: false,
+              loadingStep: null,
+              error: null,
+            });
+          } else {
+            set({ 
+              isLoading: false, 
+              loadingStep: null,
+              error: null 
+            });
+          }
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : "Failed to create product";
+          set({
+            isLoading: false,
+            loadingStep: null,
+            error: errorMessage,
+          });
+          throw error;
+        }
+      },
+
+      updateProduct: async (productData: UpdateProductRequest) => {
+        set({ isLoading: true, error: null, loadingStep: "Updating product..." });
+
+        try {
+          // Step 1: Update product data
+          set({ loadingStep: "Updating product..." });
+          
+          // Step 2: Upload new images if provided
+          if (productData.images && productData.images.length > 0) {
+            set({ loadingStep: "Uploading new images..." });
+          }
+
           const updatedProduct = await productsService.updateProduct(
             productData
           );
@@ -136,6 +188,7 @@ export const useProductsStore = create<ProductsStore>()(
             products: updatedProducts,
             currentProduct: updatedProduct,
             isLoading: false,
+            loadingStep: null,
             error: null,
           });
         } catch (error) {
@@ -143,6 +196,7 @@ export const useProductsStore = create<ProductsStore>()(
             error instanceof Error ? error.message : "Failed to update product";
           set({
             isLoading: false,
+            loadingStep: null,
             error: errorMessage,
           });
           throw error;
@@ -224,8 +278,12 @@ export const useProductsStore = create<ProductsStore>()(
         set({ currentProduct: null });
       },
 
+      setLoadingStep: (step: string | null) => {
+        set({ loadingStep: step });
+      },
+
       reset: () => {
-        set(initialState);
+        set({ ...initialState, loadingStep: null });
       },
     }),
     {

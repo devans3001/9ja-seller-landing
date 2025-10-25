@@ -15,6 +15,8 @@ export class CategoriesService {
         throw new Error(response.message || 'Failed to fetch categories');
       }
 
+
+      console.log(response.data)
       // Extract categories and pagination from the response
       const responseData = response as unknown as ProductsApiResponseWrapper;
       const categoriesData = responseData.data as Category[];

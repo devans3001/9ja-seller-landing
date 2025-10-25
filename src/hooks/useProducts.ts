@@ -12,6 +12,7 @@ export const useProducts = () => {
     isLoading: store.isLoading,
     error: store.error,
     query: store.query,
+    loadingStep: store.loadingStep,
     
     // Actions
     fetchProducts: store.fetchProducts,
@@ -24,6 +25,7 @@ export const useProducts = () => {
     clearError: store.clearError,
     clearCurrentProduct: store.clearCurrentProduct,
     reset: store.reset,
+    setLoadingStep: store.setLoadingStep,
   };
 };
 
@@ -48,6 +50,7 @@ export const useProductsState = () => {
 
 // Hook for components that only need products actions
 export const useProductsActions = () => {
+  // Use stable selectors to get consistent function references
   const fetchProducts = useProductsStore((state) => state.fetchProducts);
   const fetchProduct = useProductsStore((state) => state.fetchProduct);
   const createProduct = useProductsStore((state) => state.createProduct);

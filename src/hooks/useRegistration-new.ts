@@ -1,0 +1,1 @@
+// New registration hook - implement from scratch
