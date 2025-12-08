@@ -1,8 +1,12 @@
 import AboutSection from "@/components/homepage/AboutSection";
 import BenefitsSection from "@/components/homepage/BenefitsSection";
+import CTASection from "@/components/homepage/CTASection";
+import Experience from "@/components/homepage/Experience";
 import FAQs from "@/components/homepage/FAQs";
+import FinalCTASection from "@/components/homepage/FinalCTASection";
+import Footer from "@/components/homepage/Footer";
 import HeroSection from "@/components/homepage/HeroSection";
-import HowItWorks from "@/components/homepage/HowItWorks";
+import Incentive from "@/components/homepage/Incentive";
 import ProductGallerySection from "@/components/homepage/ProductGallerySection";
 import TrailerSection from "@/components/homepage/TrailerSection";
 import MainHeader from "@/components/MainHeader";
@@ -18,20 +22,24 @@ export default function HomePage() {
 
       <HeroSection />
       <AboutSection />
-      <HowItWorks />
-      <TrailerSection/>
+      <Experience/>
       <BenefitsSection/>
       <ProductGallerySection/>
+      <Incentive/>
+      <TrailerSection/>
+      <CTASection/>
       <FAQs/>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-24">
+      <FinalCTASection/>
+      <Footer/>
+      {/* <footer className="border-t border-border mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-muted-foreground">
             <p>&copy; 2024 SellerHub. All rights reserved.</p>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }

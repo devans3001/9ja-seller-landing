@@ -68,8 +68,10 @@ const TrailerSection = () => {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           >
+            
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-              A Sneak Peek
+              {/* A Sneak Peek */}
+              Not Convinced Yet?
             </h2>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
               Here's how easy it is for customers to buy from you

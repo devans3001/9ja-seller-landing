@@ -45,7 +45,7 @@ const AboutSection = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column - Seller Benefits */}
           <motion.div
             className="space-y-8"
@@ -212,7 +212,7 @@ const AboutSection = () => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-border">
+              {/* <div className="mt-8 pt-6 border-t border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -224,7 +224,7 @@ const AboutSection = () => {
                     99.9%
                   </span>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Quick Start CTA */}
@@ -243,7 +243,7 @@ const AboutSection = () => {
         </div>
 
         {/* Bottom CTA Section */}
-        <motion.div
+        {/* <motion.div
           className="mt-16 lg:mt-24 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -268,7 +268,7 @@ const AboutSection = () => {
               </button>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

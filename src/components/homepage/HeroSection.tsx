@@ -71,41 +71,134 @@ const HeroSection = () => {
 
           {/* Right Column - Hero Image */}
           <div className="flex justify-center lg:justify-end">
-            <motion.div
-              className="relative w-full max-w-2xl"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              {/* Hero image container with enhanced styling */}
-              <div className="relative">
-                <motion.img
-                  src={HeroImage}
-                  alt="9jacart BNPL Platform - Empowering vendors and customers"
-                  className="w-[70%] h-auto"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
-                />
+          <motion.div
+  className="relative w-full max-w-2xl"
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.8, delay: 0.6 }}
+>
+  {/* Hero image container with professional animations */}
+  <div className="relative">
+    {/* Main image with subtle entrance */}
+    <motion.div
+      className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-lg border border-gray-200 dark:border-gray-700"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, delay: 0.8 }}
+      whileHover={{ 
+        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+        y: -4
+      }}
+    >
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 hover:opacity-100 transition-opacity duration-500" />
+      
+      <motion.img
+        src={HeroImage}
+        alt="9jacart BNPL Platform - Empowering vendors and customers"
+        className="relative w-[70%] h-auto rounded-xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1 }}
+      />
+    </motion.div>
 
-                {/* Decorative elements around the image */}
-                <motion.div
-                  className="absolute -top-4 -right-4 w-8 h-8 bg-primary/20 rounded-full"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 1.2 }}
-                />
-                <motion.div
-                  className="absolute -bottom-6 -left-6 w-12 h-12 bg-accent/20 rounded-full"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 1.4 }}
-                />
+    {/* Subtle floating badges */}
+    <motion.div
+      className="absolute -top-3 -right-3 bg-primary text-white px-3 py-1.5 rounded-lg shadow-md text-xs font-semibold"
+      initial={{ scale: 0, rotate: -10 }}
+      animate={{ scale: 1, rotate: 0 }}
+      transition={{ 
+        type: "spring",
+        stiffness: 200,
+        delay: 1.2
+      }}
+    >
+      <span className="flex items-center gap-1">
+        <motion.span
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="inline-block"
+        >
+          ↻
+        </motion.span>
+        Live Platform
+      </span>
+    </motion.div>
 
-                {/* Subtle glow effect */}
-                {/* <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500" /> */}
-              </div>
-            </motion.div>
+    <motion.div
+      className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 text-primary px-3 py-1.5 rounded-lg shadow-md text-xs font-semibold border border-gray-200 dark:border-gray-700"
+      initial={{ scale: 0, rotate: 10 }}
+      animate={{ scale: 1, rotate: 0 }}
+      transition={{ 
+        type: "spring",
+        stiffness: 200,
+        delay: 1.4
+      }}
+    >
+      Trusted
+    </motion.div>
+
+    {/* Hover-triggered info dots */}
+    <div className="absolute inset-0 pointer-events-none">
+      {[
+        { x: "20%", y: "30%", delay: 0.2 },
+        { x: "70%", y: "60%", delay: 0.4 },
+        { x: "40%", y: "80%", delay: 0.6 },
+      ].map((dot, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 bg-primary/30 rounded-full"
+          initial={{ scale: 0 }}
+          animate={{ 
+            scale: [0, 1, 0],
+          }}
+          transition={{
+            scale: {
+              duration: 3,
+              repeat: Infinity,
+              delay: dot.delay,
+              times: [0, 0.5, 1]
+            }
+          }}
+          style={{
+            left: dot.x,
+            top: dot.y,
+          }}
+        />
+      ))}
+    </div>
+
+    {/* Subtle border highlight on hover */}
+    <motion.div
+      className="absolute inset-0 rounded-xl border-2 border-transparent pointer-events-none"
+      whileHover={{
+        borderColor: "rgba(59, 130, 246, 0.2)",
+      }}
+      transition={{ duration: 0.3 }}
+    />
+
+    {/* Minimal counter animation */}
+    <div className="absolute bottom-4 right-4 pointer-events-none">
+      <motion.div
+        className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-2 py-1 rounded"
+        initial={{ opacity: 0, x: 10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 1.8 }}
+      >
+        <span className="font-medium">Active:</span>
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+          className="font-bold text-primary"
+        >
+          15,234
+        </motion.span>
+      </motion.div>
+    </div>
+  </div>
+</motion.div>
           </div>
         </div>
       </div>

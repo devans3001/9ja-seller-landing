@@ -1,5 +1,11 @@
 
-<div className="mt-16 flex flex-col md:flex-row items-center justify-between">
+import incentives from "@/assets/incentives.png";
+
+function Incentive() {
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <div className="mt-16 flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2">
             <img
               src={incentives}
@@ -104,30 +110,12 @@
                 </li>
               </ul>
             </div>
-            <span className="flex items-center gap-2 text-primary font-bold ">
-              See all incentives{" "}
-              <svg
-                width="24"
-                height="25"
-                viewBox="0 0 24 25"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7 17.1523L17 7.15234"
-                  stroke="#182F38"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M7 7.15234H17V17.1523"
-                  stroke="#182F38"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
+          
           </div>
         </div>
+    </main>
+
+  )
+}
+
+export default Incentive
