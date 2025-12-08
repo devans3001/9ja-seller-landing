@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 const FinalCTASection = () => {
   return (
-    <section className="relative py-16 md:py-20 lg:py-24 overflow-hidden">
+    <section className="relative py-20 overflow-hidden">
       {/* Background with sculpture image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"

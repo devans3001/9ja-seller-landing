@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 const HeroSection = () => {
   return (
     <section
-      className="relative py-20 lg:py-25 overflow-hidden bg-gradient-to-b from-white to-green-50"
+      className="relative py-20 overflow-hidden bg-gradient-to-b from-white to-green-50"
       aria-labelledby="hero-heading"
     >
       {/* Simple background elements */}
@@ -81,7 +81,7 @@ const HeroSection = () => {
   <div className="relative">
     {/* Main image with subtle entrance */}
     <motion.div
-      className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-lg border border-gray-200 dark:border-gray-700"
+      className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 flex justify-center items-center"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.8 }}

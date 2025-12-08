@@ -9,7 +9,7 @@ interface FooterProps {
 
 const Footer = ({ variant = 'default' }: FooterProps) => {
   const contactInfo = {
-    phone: '09065347372',
+    phone: '07055559966, 07054449966',
     email: 'info@9jacart.ng',
     socialMedia: {
       instagram: 'https://instagram.com/9jacart',
@@ -20,8 +20,8 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
   };
 
   return (
-    <footer className="bg-[#193540]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <footer className="bg-[#193540]" id="contact">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
           {/* Brand Section */}
           <div className="space-y-4">

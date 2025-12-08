@@ -1,18 +1,18 @@
 import { motion } from "framer-motion";
-import { 
-  TrendingUp, 
-  Shield, 
-  Clock, 
-  DollarSign, 
-  Users, 
+import {
+  TrendingUp,
+  Shield,
+  Clock,
+  DollarSign,
+  Users,
   Package,
   BarChart3,
-  BadgeCheck
+  BadgeCheck,
 } from "lucide-react";
 
 const AboutSection = () => {
   return (
-    <section className="py-16 md:py-24 lg:py-32 bg-gradient-to-b from-background to-gray-50/50 dark:to-gray-900/30">
+    <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-gray-50/50 dark:to-gray-900/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="max-w-4xl mx-auto text-center mb-16 lg:mb-24">
@@ -27,7 +27,8 @@ const AboutSection = () => {
               SELLER PLATFORM
             </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-              Designed for <span className="text-primary">Growing</span> Your Business
+              Designed for <span className="text-primary">Growing</span> Your
+              Business
             </h2>
           </motion.div>
 
@@ -38,14 +39,18 @@ const AboutSection = () => {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            A powerful e-commerce platform built specifically for sellers who want to 
-            <span className="font-semibold text-foreground"> scale efficiently </span>
+            A powerful e-commerce platform built specifically for sellers who
+            want to
+            <span className="font-semibold text-foreground">
+              {" "}
+              scale efficiently{" "}
+            </span>
             and maximize their online presence.
           </motion.p>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left Column - Seller Benefits */}
           <motion.div
             className="space-y-8"
@@ -58,7 +63,7 @@ const AboutSection = () => {
               <h3 className="text-2xl font-bold text-foreground">
                 Everything You Need to Succeed
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -69,8 +74,9 @@ const AboutSection = () => {
                       Guaranteed Revenue
                     </h4>
                     <p className="text-muted-foreground">
-                      Receive full payments upfront while customers pay in installments. 
-                      Eliminate payment delays and cash flow issues.
+                      Receive full payments upfront while customers pay in
+                      installments. Eliminate payment delays and cash flow
+                      issues.
                     </p>
                   </div>
                 </div>
@@ -84,8 +90,9 @@ const AboutSection = () => {
                       Expanded Customer Base
                     </h4>
                     <p className="text-muted-foreground">
-                      Tap into customers who prefer flexible payment options. 
-                      Increase your market reach without additional marketing costs.
+                      Tap into customers who prefer flexible payment options.
+                      Increase your market reach without additional marketing
+                      costs.
                     </p>
                   </div>
                 </div>
@@ -99,8 +106,9 @@ const AboutSection = () => {
                       Streamlined Operations
                     </h4>
                     <p className="text-muted-foreground">
-                      Comprehensive dashboard for inventory, orders, and analytics. 
-                      Manage your entire business from one intuitive interface.
+                      Comprehensive dashboard for inventory, orders, and
+                      analytics. Manage your entire business from one intuitive
+                      interface.
                     </p>
                   </div>
                 </div>
@@ -115,7 +123,8 @@ const AboutSection = () => {
                 </div>
                 <div>
                   <p className="text-foreground italic mb-2">
-                    "Our sales increased by 45% in the first month. The BNPL option brought in customers we couldn't reach before."
+                    "Our sales increased by 45% in the first month. The BNPL
+                    option brought in customers we couldn't reach before."
                   </p>
                   <p className="text-sm font-medium text-foreground">
                     Sarah K., Fashion Retailer
@@ -161,9 +170,9 @@ const AboutSection = () => {
                   <div className="text-sm text-muted-foreground font-medium">
                     Average Sales Increase
                   </div>
-                  <div className="text-xs text-green-600 dark:text-green-400 mt-1">
+                  {/* <div className="text-xs text-green-600 dark:text-green-400 mt-1">
                     +12% this quarter
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="text-center">
@@ -176,9 +185,9 @@ const AboutSection = () => {
                   <div className="text-sm text-muted-foreground font-medium">
                     Payment Security
                   </div>
-                  <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                  {/* <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                     Zero payment defaults
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="text-center">
@@ -191,9 +200,9 @@ const AboutSection = () => {
                   <div className="text-sm text-muted-foreground font-medium">
                     Active Buyers
                   </div>
-                  <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                  {/* <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
                     Growing daily
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="text-center">
@@ -201,14 +210,14 @@ const AboutSection = () => {
                     <Clock className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-3xl font-bold text-foreground mb-1">
-                    {/* < 30min */}
+                     30min
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
                     Support Response
                   </div>
-                  <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                  {/* <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
                     Priority seller support
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -226,22 +235,22 @@ const AboutSection = () => {
                 </div>
               </div> */}
             </div>
-
-            {/* Quick Start CTA */}
-            <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-xl p-6">
-              <h4 className="font-bold text-lg text-foreground mb-2">
-                Ready to Start Selling?
-              </h4>
-              <p className="text-sm text-muted-foreground mb-4">
-                Complete registration in under 10 minutes and list your first product.
-              </p>
-              <button className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200">
-                Join Seller Dashboard →
-              </button>
-            </div>
           </motion.div>
         </div>
 
+        {/* Quick Start CTA */}
+        <div className="bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-xl p-6 mt-5 text-center">
+          <h4 className="font-bold text-lg text-foreground mb-2">
+            Ready to Start Selling?
+          </h4>
+          <p className="text-sm text-muted-foreground mb-4">
+            Complete registration in under 10 minutes and list your first
+            product.
+          </p>
+          <button className=" p-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200">
+            Join Seller Dashboard →
+          </button>
+        </div>
         {/* Bottom CTA Section */}
         {/* <motion.div
           className="mt-16 lg:mt-24 text-center"

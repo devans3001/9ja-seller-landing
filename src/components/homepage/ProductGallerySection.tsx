@@ -50,7 +50,7 @@ const productCategories = [
 
 const ProductGallerySection = () => {
   return (
-    <section className="py-16 md:py-20 lg:py-24 bg-white dark:bg-gray-900">
+    <section className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -108,10 +108,10 @@ const ProductGallerySection = () => {
                   </p>
 
                   {/* View Link */}
-                  <div className="flex items-center text-primary text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  {/* <div className="flex items-center text-primary text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     View details
                     <ChevronRight className="w-3 h-3 ml-1" />
-                  </div>
+                  </div> */}
                 </div>
               </motion.div>
             );

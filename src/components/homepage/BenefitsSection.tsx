@@ -49,8 +49,8 @@ const benefits = [
     icon: Eye,
     stat: "3x",
     statLabel: "More Visibility",
-    color: "from-amber-500 to-orange-600",
-    bgColor: "bg-amber-50 dark:bg-amber-950/30"
+    color: "from-purple-500 to-violet-600",
+    bgColor: "bg-purple-50 dark:bg-purple-950/30"
   },
   {
     id: "logistics-support",
@@ -59,8 +59,8 @@ const benefits = [
     icon: Truck,
     stat: "98%",
     statLabel: "Delivery Success",
-    color: "from-red-500 to-rose-600",
-    bgColor: "bg-red-50 dark:bg-red-950/30"
+    color: "from-green-500 to-emerald-600",
+    bgColor: "bg-green-50 dark:bg-green-950/30"
   },
   {
     id: "vendor-support",
@@ -69,15 +69,15 @@ const benefits = [
     icon: Store,
     stat: "< 15min",
     statLabel: "Response Time",
-    color: "from-indigo-500 to-blue-600",
-    bgColor: "bg-indigo-50 dark:bg-indigo-950/30"
+    color: "from-blue-500 to-cyan-600",
+    bgColor: "bg-blue-50 dark:bg-blue-950/30"
   },
 ];
 
 const BenefitsSection = () => {
   return (
     <section
-      className="py-20 md:py-28 lg:py-32 bg-[#EAF7ED] dark:from-gray-900 dark:to-gray-950"
+      className="py-20 bg-[#EAF7ED] dark:from-gray-900 dark:to-gray-950"
       aria-labelledby="benefits-heading"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,12 +134,12 @@ const BenefitsSection = () => {
                   
                   {/* Stat Badge */}
                   <div className="absolute top-6 right-6">
-                    <div className={`text-white px-3 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r ${benefit.color}`}>
+                    {/* <div className={`text-white px-3 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r ${benefit.color}`}>
                       {benefit.stat}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-1">
                       {benefit.statLabel}
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Icon */}
@@ -227,11 +227,11 @@ const BenefitsSection = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button className="px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all duration-200 hover:shadow-lg hover:shadow-primary/25 flex items-center justify-center gap-2">
                   Start Selling Now
-                  <ArrowUpRight className="w-4 h-4" />
+                  {/* <ArrowUpRight className="w-4 h-4" /> */}
                 </button>
-                <button className="px-8 py-3 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                {/* <button className="px-8 py-3 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
                   View Seller Dashboard
-                </button>
+                </button> */}
               </div>
             </div>
             

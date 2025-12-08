@@ -23,7 +23,7 @@ const TrailerSection = () => {
   };
 
   return (
-    <section className="relative py-16 md:py-20 lg:py-28 bg-gradient-to-br from-teal-800 via-teal-700 to-teal-900 overflow-hidden">
+    <section className="relative py-20 bg-[#193540] overflow-hidden" id="about">
       {/* Background Pattern */}
       <div className="absolute inset-0">
         {/* Left side circles */}

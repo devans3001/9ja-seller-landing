@@ -11,6 +11,25 @@ export default function MainHeader() {
               <img src={Logo} alt="SellerHub Logo" className="h-8 w-auto" />
             </Link>
           </div>
+
+          <div>
+            {/* Navigation Links can be added here in the future */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#home" className="text-white hover:text-[#8DEB6E] transition-colors">
+                Home
+              </a>
+              <a href="#about" className="text-white hover:text-[#8DEB6E] transition-colors">
+                About
+              </a>
+              <a href="#faq" className="text-white hover:text-[#8DEB6E] transition-colors">
+                FAQ
+              </a>
+              <a href="#contact" className="text-white hover:text-[#8DEB6E] transition-colors">
+                Contact
+              </a>
+            </nav>
+          </div>
+          
           <div className="flex items-center space-x-4">
             <Link to="/login" className="text-white  transition-colors">
               Login
