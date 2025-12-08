@@ -162,9 +162,9 @@ const faqs = [
 ];
 
 export default function FAQs() {
-  const [openCategories, setOpenCategories] = useState<string[]>([
-    "getting-started",
-  ]);
+  const [openCategories, setOpenCategories] = useState<string>(
+    "getting-started"
+  );
 
   return (
     <section className="py-20  bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950" id="faq">
@@ -242,9 +242,9 @@ export default function FAQs() {
                         className="w-full justify-start h-auto py-3 px-4 mb-2"
                         onClick={() => 
                           setOpenCategories(
-                            openCategories[0] === category.id
-                              ? []
-                              : [category.id]
+                            openCategories === category.id
+                              ? ""
+                              : category.id
                           )
                         }
                       >

@@ -6,7 +6,7 @@ import {
   Home,
   Sparkles,
   Smartphone,
-  ChevronRight,
+  // ChevronRight,
 } from "lucide-react";
 
 const productCategories = [
