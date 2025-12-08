@@ -56,7 +56,7 @@ const FinalCTASection = () => {
                 >
                   <Link to="/vendor-form">
                     <Button className="text-primary bg-[#8DEB6E] hover:bg-[#8DEB6E]/80">
-                      <span>Knock Knock</span>
+                      <span>Take Profit</span>
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </Button>
                   </Link>
