@@ -19,6 +19,8 @@ import StorefrontPage from './pages/storefront/StorefrontPage';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import SettingsPage from './pages/settings/SettingsPage';
 import AuthLayout from './components/layout/AuthLayout';
+import ContactPage from './pages/ContactPage';
+import Layout from './pages/Layout';
 
 export default function App() {
   const initialize = useAuthStore((state) => state.initialize);
@@ -32,7 +34,11 @@ export default function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
+        <Route element={<Layout/>}>
+
         <Route path="/" element={<HomePage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        </Route>
         
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />

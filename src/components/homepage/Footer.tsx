@@ -40,7 +40,9 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
           </div>
 
           {/* Contact Information */}
-          <div className="space-y-4">
+          <div className="space-y-4 flex justify-center">
+            <div>
+
             <h3 className="text-lg font-semibold text-white">Contact Us</h3>
             <div className="space-y-3">
               {/* Phone */}
@@ -61,10 +63,14 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
                 <span className="text-sm">{contactInfo.email}</span>
               </a>
             </div>
+            </div>
+
           </div>
 
           {/* Social Media Links */}
-          <div className="space-y-4">
+          <div className="space-y-4 flex justify-end">
+            <div  className="">
+
             <h3 className="text-lg font-semibold text-white">Follow Us</h3>
             <div className="flex flex-wrap gap-3 md:gap-4">
               <a
@@ -117,6 +123,8 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
               </a>
             </div>
           </div>
+            </div>
+
         </div>
 
         {/* Navigation Links (for default variant) */}
@@ -133,6 +141,7 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
                 <Link
                   to="/contact"
                   className="text-sm text-white transition-colors"
+                  hrefLang='home'
                 >
                   Contact
                 </Link>

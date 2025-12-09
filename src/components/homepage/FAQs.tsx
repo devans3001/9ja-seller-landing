@@ -26,6 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 const faqs = [
   {
@@ -162,12 +163,14 @@ const faqs = [
 ];
 
 export default function FAQs() {
-  const [openCategories, setOpenCategories] = useState<string>(
-    "getting-started"
-  );
+  const [openCategories, setOpenCategories] =
+    useState<string>("getting-started");
 
   return (
-    <section className="py-20  bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950" id="faq">
+    <section
+      className="py-20  bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950"
+      id="faq"
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 lg:mb-20">
@@ -240,18 +243,16 @@ export default function FAQs() {
                             : "ghost"
                         }
                         className="w-full justify-start h-auto py-3 px-4 mb-2"
-                        onClick={() => 
+                        onClick={() =>
                           setOpenCategories(
-                            openCategories === category.id
-                              ? ""
-                              : category.id
+                            openCategories === category.id ? "" : category.id
                           )
                         }
                       >
                         <Icon className="w-4 h-4 mr-3" />
                         <div className="flex-1 text-left">
                           <div className="font-medium">{category.category}</div>
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className="text-xs text-muted-background mt-1">
                             {category.items.length} questions
                           </div>
                         </div>
@@ -355,10 +356,12 @@ export default function FAQs() {
                       </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4">
-                      <Button size="lg" className="gap-2">
-                        <MessageSquare className="w-4 h-4" />
-                        Chat with Support
-                      </Button>
+                      <Link to={"/contact"}>
+                        <Button size="lg" className="gap-2">
+                          <MessageSquare className="w-4 h-4" />
+                          Contact Us
+                        </Button>
+                      </Link>
                       <Button size="lg" variant="outline" className="gap-2">
                         <Package className="w-4 h-4" />
                         Download Seller Guide

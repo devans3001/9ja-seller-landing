@@ -8,6 +8,7 @@ import {
   Smartphone,
   // ChevronRight,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const productCategories = [
   {
@@ -15,42 +16,48 @@ const productCategories = [
     name: "Health",
     description: "Supplements • Wellness • Fitness",
     icon: Heart,
+    color: "from-green-500/20 to-green-600/20"
   },
   {
     id: "groceries",
     name: "Groceries",
     description: "Food • Beverages • Essentials",
     icon: ShoppingCart,
+     color: "from-orange-500/20 to-orange-600/20",
   },
   {
     id: "fashion",
     name: "Fashion",
     description: "Clothing • Shoes • Accessories",
     icon: Shirt,
+      color: "from-pink-500/20 to-pink-600/20",
   },
   {
     id: "home",
     name: "Home",
     description: "Furniture • Decor • Appliances",
     icon: Home,
+     color: "from-blue-500/20 to-blue-600/20",
   },
   {
     id: "beauty",
     name: "Beauty",
     description: "Skincare • Haircare • Baby Care",
     icon: Sparkles,
+     color: "from-cyan-500/20 to-cyan-600/20",
   },
   {
     id: "electronics",
     name: "Electronics",
     description: "Phones • Laptops • Gadgets",
     icon: Smartphone,
+      color: "from-purple-500/20 to-purple-600/20",
   },
 ];
 
 const ProductGallerySection = () => {
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section className="py-15 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -93,7 +100,7 @@ const ProductGallerySection = () => {
               >
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700 h-full flex flex-col items-center text-center">
                   {/* Icon */}
-                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors duration-200">
+                  <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors duration-200`}>
                     <IconComponent className="w-6 h-6 text-primary" />
                   </div>
 
@@ -128,9 +135,9 @@ const ProductGallerySection = () => {
         >
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Don't see your category?{" "}
-            <button className="text-primary hover:text-primary/80 font-medium">
+            <Link to={"/contact"} className="text-primary hover:text-primary/80 font-medium cursor-pointer">
               Contact us →
-            </button>
+            </Link>
           </p>
         </motion.div>
       </div>

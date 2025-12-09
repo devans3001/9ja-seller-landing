@@ -90,7 +90,7 @@ const CTASection = () => {
                     to="/vendor-form"
                     className="inline-flex items-center gap-2"
                   >
-                    Register Your Interest
+                    Sign Up
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </Button>

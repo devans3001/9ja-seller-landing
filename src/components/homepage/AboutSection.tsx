@@ -3,14 +3,17 @@ import {
   TrendingUp,
   Shield,
   Clock,
-  DollarSign,
   Users,
   Package,
   BarChart3,
   BadgeCheck,
+  Banknote,
 } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const AboutSection = () => {
+   const [isHovered, setIsHovered] = useState(false);
   return (
     <section className="py-16 lg:py-20 bg-gradient-to-b from-background to-gray-50/50 dark:to-gray-900/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,7 +70,7 @@ const AboutSection = () => {
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <DollarSign className="w-6 h-6 text-primary" />
+                    <Banknote className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">
@@ -210,7 +213,7 @@ const AboutSection = () => {
                     <Clock className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-3xl font-bold text-foreground mb-1">
-                     30min
+                    30min
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
                     Support Response
@@ -247,9 +250,82 @@ const AboutSection = () => {
             Complete registration in under 10 minutes and list your first
             product.
           </p>
-          <button className=" p-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200">
-            Join Seller Dashboard →
-          </button>
+         <Link to={"/signup"}>
+      <motion.button
+        className="group relative cursor-pointer p-3 bg-primary text-white font-semibold rounded-lg overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        // Scale and depth on hover
+        whileHover={{ 
+          scale: 1.05,
+          y: -2,
+          transition: { duration: 0.3 }
+        }}
+        // Click feedback
+        whileTap={{ 
+          scale: 0.98,
+          y: 1,
+          transition: { duration: 0.1 }
+        }}
+      >
+        {/* Shimmer/glow background effect */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          initial={{ x: "-100%" }}
+          animate={{ x: isHovered ? "100%" : "-100%" }}
+          transition={{ 
+            duration: 0.8,
+            ease: "easeInOut"
+          }}
+        />
+        
+        {/* Pulsing border glow */}
+        <motion.div
+          className="absolute inset-0 rounded-lg border-2 border-white/0"
+          animate={{
+            borderColor: ["rgba(255,255,255,0)", "rgba(255,255,255,0.3)", "rgba(255,255,255,0)"]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            repeatType: "loop"
+          }}
+        />
+        
+        {/* Content with staggered animations */}
+        <motion.span className="relative z-10 flex items-center justify-center gap-2">
+          <motion.span
+            animate={{ x: 0 }}
+            whileHover={{ x: -2 }}
+            transition={{ duration: 0.3 }}
+          >
+            Join Sellers
+          </motion.span>
+          
+          <motion.span
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isHovered ? 0.8 : 1 }}
+          >
+            Now
+          </motion.span>
+          
+          <motion.span
+            initial={{ x: 0, opacity: 0.8 }}
+            animate={{ 
+              x: isHovered ? 8 : 0,
+              opacity: 1
+            }}
+            transition={{ 
+              duration: 0.3,
+              type: "spring",
+              stiffness: 500
+            }}
+          >
+            →
+          </motion.span>
+        </motion.span>
+      </motion.button>
+    </Link>
         </div>
         {/* Bottom CTA Section */}
         {/* <motion.div
