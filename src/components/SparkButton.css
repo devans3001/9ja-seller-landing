@@ -42,6 +42,9 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  border: 2px solid #a9cdb2;
+  border-radius: 50px;
+
 }
 
 .ambilight-track-outer {
@@ -51,6 +54,8 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+   border: 2px solid #a9cdb2;
+  border-radius: 50px;
 }
 
 .ambilight-svg {
