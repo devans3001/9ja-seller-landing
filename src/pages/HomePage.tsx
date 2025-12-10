@@ -9,6 +9,7 @@ import HeroSection from "@/components/homepage/HeroSection";
 import Incentive from "@/components/homepage/Incentive";
 import ProductGallerySection from "@/components/homepage/ProductGallerySection";
 import TrailerSection from "@/components/homepage/TrailerSection";
+import ScrollToTop from "@/components/ScrollToTop";
 // import MainHeader from "@/components/MainHeader";
 
 // import { Link } from "react-router-dom";
@@ -32,6 +33,7 @@ export default function HomePage() {
       <FAQs />
 
       <FinalCTASection />
+      <ScrollToTop/>
       {/* <Footer/> */}
     </div>
   );

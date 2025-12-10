@@ -9,9 +9,6 @@ import {
   // ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import FloatingParticles from "../options/FloatingParticles";
-import GridPattern from "../options/GridPatterns";
-import FloatingBubbles from "../options/FloatingBubbles";
 
 const productCategories = [
   {
@@ -58,25 +55,14 @@ const productCategories = [
   },
 ];
 
-const backgroundComponents = [GridPattern, FloatingParticles,FloatingBubbles];
-
-const RandomBackground =
-    backgroundComponents[Math.floor(Math.random() * backgroundComponents.length)];
-
 const ProductGallerySection = () => {
   return (
-    <section className="relative py-16 bg-background overflow-hidden">
-      {/* Background Animation */}
-      
-      <RandomBackground />
-
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-        
+    <section className="py-15 bg-white dark:bg-gray-900">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12 pt-4">
+        <div className="text-center mb-12">
           <motion.h2
-            className="text-2xl md:text-3xl font-semibold text-foreground mb-4"
+            className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white mb-4"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -85,7 +71,7 @@ const ProductGallerySection = () => {
             Sell Across Multiple Categories
           </motion.h2>
           <motion.p
-            className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base"
+            className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm md:text-base"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -112,23 +98,29 @@ const ProductGallerySection = () => {
                   delay: index * 0.05,
                 }}
               >
-                <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4 hover:bg-card transition-colors duration-200 border border-border h-full flex flex-col items-center text-center shadow-sm hover:shadow-md">
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 border border-gray-200 dark:border-gray-700 h-full flex flex-col items-center text-center">
                   {/* Icon */}
                   <div
-                    className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200`}
+                    className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-lg flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors duration-200`}
                   >
                     <IconComponent className="w-6 h-6 text-primary" />
                   </div>
 
                   {/* Category Name */}
-                  <h3 className="font-medium text-foreground mb-1 text-sm">
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-1 text-sm">
                     {category.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs text-muted-foreground mb-3 flex-1">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 flex-1">
                     {category.description}
                   </p>
+
+                  {/* View Link */}
+                  {/* <div className="flex items-center text-primary text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    View details
+                    <ChevronRight className="w-3 h-3 ml-1" />
+                  </div> */}
                 </div>
               </motion.div>
             );
@@ -143,17 +135,19 @@ const ProductGallerySection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Don't see your category?{" "}
             <Link
               to={"/contact"}
-              className="text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors"
+              className="text-primary hover:text-primary/80 font-medium cursor-pointer"
             >
               Contact us →
             </Link>
           </p>
         </motion.div>
-      </div>
+
+        </div>
+       
     </section>
   );
 };
