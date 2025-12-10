@@ -349,7 +349,7 @@ const HeroAnimation = () => {
               }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
-            Active:
+            Transactions:
             {/* <motion.span
               className="font-bold text-primary"
               initial={{ opacity: 0 }}

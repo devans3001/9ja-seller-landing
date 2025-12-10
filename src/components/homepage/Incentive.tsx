@@ -46,7 +46,7 @@ function Incentive() {
               </span>
             </div>
             <h2 className="text-3xl md:text-5xl font-bold text-black mb-4">
-              Get started with over <br /> $50, 000 in incentives
+              Get started with over <br /> ₦50, 000 in incentives
             </h2>
             <p className="text-muted-foreground mb-4">
               As a new seller, you can take advantage of a series of incentives.

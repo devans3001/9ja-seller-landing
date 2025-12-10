@@ -36,7 +36,7 @@ const HeroSection = () => {
                 Sell more,
                 <div className="absolute -bottom-2 left-0 right-0 h-1 bg-primary/30 rounded-full" />
               </span> */}
-              <RotatingText
+              {/* <RotatingText
                 texts={["Scale faster", "Go further", "Achieve more", "Win bigger"]}
                 mainClassName=" px-2 bg-[#a9cdb2] text-black overflow-hidden py-0.5 justify-center rounded-lg"
                 staggerFrom={"first"}
@@ -47,12 +47,16 @@ const HeroSection = () => {
                 splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
                 transition={{ type: "spring", damping: 30, stiffness: 400 }}
                 rotationInterval={2000}
-              />
+              /> */}
               {/* Less stress */}
+
+            <span className=" px-2 bg-[#a9cdb2] text-black overflow-hidden py-0.5 justify-center rounded-lg">
+              Achieve more
+            </span>
             </motion.h1>
 
             <motion.p
-              className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto lg:mx-0"
+              className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto lg:mx-0 pb-0.5 sm:pb-1 md:pb-1"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}

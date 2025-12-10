@@ -126,7 +126,7 @@ const AboutSection = () => {
                 </div>
                 <div>
                   <p className="text-foreground italic mb-2">
-                    "Our sales increased by 45% in the first month. The BNPL
+                    "Our sales increased by 15% in the first week. The BNPL
                     option brought in customers we couldn't reach before."
                   </p>
                   <p className="text-sm font-medium text-foreground">
@@ -213,7 +213,7 @@ const AboutSection = () => {
                     <Clock className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-3xl font-bold text-foreground mb-1">
-                    30min
+                    10 min
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
                     Support Response
