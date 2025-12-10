@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import RotatingText from "../RotatingText";
 import SparkButton from "../SparkButton";
 import HeroAnimation from "./HeroAnimation";
 
