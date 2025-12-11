@@ -40,7 +40,7 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
           </div>
 
           {/* Contact Information */}
-          <div className="space-y-4 flex justify-center">
+          <div className="space-y-4 md:flex jmd:ustify-center">
             <div>
 
             <h3 className="text-lg font-semibold text-white">Contact Us</h3>
@@ -68,7 +68,7 @@ const Footer = ({ variant = 'default' }: FooterProps) => {
           </div>
 
           {/* Social Media Links */}
-          <div className="space-y-4 flex justify-end">
+          <div className="space-y-4 md:flex md:justify-end">
             <div  className="">
 
             <h3 className="text-lg font-semibold text-white">Follow Us</h3>
