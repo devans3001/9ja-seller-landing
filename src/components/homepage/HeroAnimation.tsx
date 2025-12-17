@@ -3,7 +3,6 @@ import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import gsap from "gsap";
 import VendorBg from "@/assets/vendor-bg.png";
 import VendorLady from "@/assets/vendor-lady.png";
-import CountUp from "./CountUp";
 
 const HeroAnimation = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -349,7 +348,7 @@ const HeroAnimation = () => {
               }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
-            Transactions:
+            Active: 24/7
             {/* <motion.span
               className="font-bold text-primary"
               initial={{ opacity: 0 }}
@@ -358,14 +357,14 @@ const HeroAnimation = () => {
             >
               15,234
             </motion.span> */}
-            <CountUp
+            {/* <CountUp
               from={0}
               to={15234}
               separator=","
               direction="up"
               duration={1}
               className="count-up-text"
-            />
+            /> */}
           </span>
         </motion.div>
       </motion.div>

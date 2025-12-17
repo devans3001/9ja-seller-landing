@@ -168,10 +168,10 @@ const AboutSection = () => {
                     <BarChart3 className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-3xl font-bold text-foreground mb-1">
-                    68%
+                    99.9%
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
-                    Average Sales Increase
+                    Platform
                   </div>
                   {/* <div className="text-xs text-green-600 dark:text-green-400 mt-1">
                     +12% this quarter
@@ -186,7 +186,7 @@ const AboutSection = () => {
                     100%
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
-                    Payment Security
+                    Secure Payments
                   </div>
                   {/* <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                     Zero payment defaults
@@ -198,10 +198,10 @@ const AboutSection = () => {
                     <Users className="w-7 h-7 text-primary" />
                   </div>
                   <div className="text-3xl font-bold text-foreground mb-1">
-                    2.5M+
+                    Multi-Category
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
-                    Active Buyers
+                    Product Listings
                   </div>
                   {/* <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
                     Growing daily
